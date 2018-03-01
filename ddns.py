@@ -79,7 +79,7 @@ def getip():
         except requests.RequestException as ex:
             print("Fail to request public ip. %s", file=sys.stderr)
             print(ex, file=sys.stderr)
-            sleep(0.2)  # a little slowly
+            sleep(0.2)  # ip.taobao.com said that they limit the frequency to 10qps, so we have 5qps now
             continue
         return json.loads(r.text)["data"]["ip"]
 
