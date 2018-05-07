@@ -1,6 +1,7 @@
 import json
 import os
 import argparse
+import re
 from time import sleep
 
 import requests
@@ -71,18 +72,41 @@ def parse_fqdn(dnspod, all_domains, fqdn):
             continue
     raise LookupError("Fail to lookup the domain name %s" % fqdn)
 
+def getip_taobao():
+    try:
+        r = requests.get("http://ip.taobao.com/service/getIpInfo.php?ip=myip",timeout=3)
+        return json.loads(r.text)["data"]["ip"]
+    except json.decoder.JSONDecodeError as ex:
+        print("Json decode error: ", r.text)
+        print(ex, file=sys.stderr)
+    except requests.RequestException as ex:
+        print("Fail to request public ip. %s", file=sys.stderr)
+        print(ex, file=sys.stderr)
+    return None
 
+def getip_cip():
+    try:
+        r= requests.get("http://cip.cc",headers={
+            "User-Agent":"curl"
+        },timeout=3)
+        m=r.text.split("\n")
+        for line in m:
+            if line.startswith("IP"):
+                return line[line.index(":")+1:].strip()
+    except Exception as ex:
+        print("cip Error", file=sys.stderr)
+        print(ex,file=sys.stderr)
+    return None
+
+ip_candidates=[getip_taobao, getip_cip]
 def getip():
     while True:
-        try:
-            r = requests.get("http://ip.taobao.com/service/getIpInfo.php?ip=myip")
-        except requests.RequestException as ex:
-            print("Fail to request public ip. %s", file=sys.stderr)
-            print(ex, file=sys.stderr)
-            sleep(0.2)  # ip.taobao.com said that they limit the frequency to 10qps, so we have 5qps now
-            continue
-        return json.loads(r.text)["data"]["ip"]
-
+        for fn in ip_candidates:
+            ip=fn()
+            if ip is not None:
+                return ip
+        print("All candidate fails, retry in 1 minute")
+        sleep(60)
 
 def parse_args():
     parser = argparse.ArgumentParser(description="DDns Script for dnspod")
