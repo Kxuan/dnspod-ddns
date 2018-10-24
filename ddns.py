@@ -77,11 +77,25 @@ def getip_taobao():
         r = requests.get("http://ip.taobao.com/service/getIpInfo.php?ip=myip",timeout=3)
         return json.loads(r.text)["data"]["ip"]
     except json.decoder.JSONDecodeError as ex:
-        print("Json decode error: ", r.text)
+        print("taobao: json decode error: ", r.text)
         print(ex, file=sys.stderr)
     except requests.RequestException as ex:
-        print("Fail to request public ip. %s", file=sys.stderr)
+        print("Error on ip.taobao.com: %s", file=sys.stderr)
         print(ex, file=sys.stderr)
+    return None
+
+def getip_ipcn():
+    try:
+        r= requests.get("http://ip.cn",headers={
+            "User-Agent":"curl/0.ddns (kxuanobj@gmail.com)"
+        },timeout=3)
+        m = re.search("：(.+?)\s",r.text)
+        if m is None:
+            return None
+        return m.group(1)
+    except Exception as ex:
+        print("ipcn Error", file=sys.stderr)
+        print(ex,file=sys.stderr)
     return None
 
 def getip_cip():
@@ -98,7 +112,7 @@ def getip_cip():
         print(ex,file=sys.stderr)
     return None
 
-ip_candidates=[getip_taobao, getip_cip]
+ip_candidates=[getip_ipcn, getip_taobao, getip_cip]
 def getip():
     while True:
         for fn in ip_candidates:
