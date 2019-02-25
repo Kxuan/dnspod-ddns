@@ -112,7 +112,7 @@ def getip_cip():
         print(ex,file=sys.stderr)
     return None
 
-ip_candidates=[getip_ipcn, getip_taobao, getip_cip]
+ip_candidates=[getip_ipcn, getip_cip]
 def getip():
     while True:
         for fn in ip_candidates:
@@ -150,7 +150,7 @@ def main():
         for r in all_records:
             if r.value != ip:
                 r.ddns(ip)
-        sleep(1)
+        sleep(60)
 
 
 if __name__ == '__main__':
