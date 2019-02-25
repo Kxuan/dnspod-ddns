@@ -26,7 +26,7 @@ class Record:
     def __init__(self, dnspod, domain_id, sub_domain):
         self.dnspod = dnspod
         self.domain_id = domain_id
-        rep = dnspod.Record.List(domain_id=domain_id, sub_domain=sub_domain)
+        rep = dnspod.Record.List(domain_id=domain_id, sub_domain=sub_domain, record_type="A")
         if int(rep["info"]["record_total"]) != 1:
             raise LookupError()
         rec = rep["records"][0]
