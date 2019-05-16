@@ -8,7 +8,6 @@ import requests
 import sys
 
 from dnspod import DnsPod
-from pprint import pprint
 
 all_domains = []
 records = []
