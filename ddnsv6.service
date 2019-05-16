@@ -2,6 +2,7 @@
 Description=DDns v6 for DNSPod
 Requires=network.target
 After=network.target network-online.target
+StartLimitIntervalSec=0
 
 [Service]
 Type=simple
@@ -11,7 +12,6 @@ ProtectSystem=full
 ProtectHome=true
 NoNewPrivileges=true
 Restart=always
-StartLimitIntervalSec=0
 RestartSec=30s
 
 

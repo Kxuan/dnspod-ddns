@@ -89,7 +89,7 @@ def parse_fqdn(dnspod, all_domains, fqdn, ip):
                    domain_id=d["id"],
                    sub_domain=sub_domain,
                    record_id=rec["id"],
-                   line_id=rec["record_line_id"]
+                   line_id=rec["line_id"]
                    )
         r.set(ip)
         return r
