@@ -1,0 +1,19 @@
+[Unit]
+Description=DDns v6 for DNSPod
+Requires=network.target
+After=network.target network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python /data/bin/ddnsv6.py xx.xx.com
+Environment="DNSPOD_TOKEN=47118,79bc8ab436b1*******dd5a20dc9a802"
+ProtectSystem=full
+ProtectHome=true
+NoNewPrivileges=true
+Restart=always
+StartLimitIntervalSec=0
+RestartSec=30s
+
+
+[Install]
+WantedBy=multi-user.target
