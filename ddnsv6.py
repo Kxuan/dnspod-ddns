@@ -31,7 +31,7 @@ class Record:
         self.line_id = line_id
 
     def __str__(self):
-        return "%s(%d:%d)" % (self.fqdn, self.domain_id, self.record_id)
+        return "{}({:d}:{:d})".format(self.fqdn, self.domain_id, self.record_id)
 
     def set(self, ip):
         self.dnspod.Record.Modify(domain_id=self.domain_id,
@@ -40,7 +40,7 @@ class Record:
                                   sub_domain=self.sub_domain,
                                   record_line_id=self.line_id,
                                   value=ip)
-        print("%s: updated to %s" % (self.fqdn, ip))
+        print("{}: updated to {}".format(self.fqdn, ip))
 
 
 def parse_fqdn(dnspod, all_domains, fqdn, ip):
@@ -61,7 +61,7 @@ def parse_fqdn(dnspod, all_domains, fqdn, ip):
             break
 
     if sub_domain is None:
-        raise LookupError("No such domain name %s" % fqdn)
+        raise LookupError("No such domain name {}".format(fqdn))
 
     rep = dnspod.Record.List(domain_id=d["id"], sub_domain=sub_domain, record_type="AAAA")
     count = int(rep["info"]["record_total"])
@@ -75,8 +75,8 @@ def parse_fqdn(dnspod, all_domains, fqdn, ip):
         if r["status"]["code"] != "1":
             print(r["status"]["message"], file=sys.stderr)
             sys.exit(1)
-        print("Created new AAAA record %s = %s" % (fqdn, ip))
-        return Record(dnspod, "%s.%s" % (sub_domain, rep["domain"]["punycode"]),
+        print("Created new AAAA record {} = {}".format(fqdn, ip))
+        return Record(dnspod, "{}.{}".format(sub_domain, rep["domain"]["punycode"]),
                       domain_id=d["id"],
                       sub_domain=sub_domain,
                       record_id=r["record"]["id"],
@@ -85,7 +85,7 @@ def parse_fqdn(dnspod, all_domains, fqdn, ip):
     else:
         rec = rep["records"][0]
 
-        r = Record(dnspod, "%s.%s" % (sub_domain, rep["domain"]["punycode"]),
+        r = Record(dnspod, "{}.{}".format(sub_domain, rep["domain"]["punycode"]),
                    domain_id=d["id"],
                    sub_domain=sub_domain,
                    record_id=rec["id"],
@@ -144,7 +144,7 @@ def main():
             print(m)
         ip = get_ipv6()
         if old_ip != ip:
-            print("IPv6 Address Changed: %s" % ip)
+            print("IPv6 Address Changed: {}".format(ip))
             record.set(ip)
             old_ip = ip
 

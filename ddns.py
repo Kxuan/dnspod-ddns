@@ -3,15 +3,12 @@ import os
 import argparse
 import re
 from time import sleep
-
 import requests
 import sys
-
 from dnspod import DnsPod
 
 all_domains = []
 records = []
-
 
 class Record:
     dnspod = None
@@ -33,13 +30,13 @@ class Record:
         if rec["name"] == "@":
             self.fqdn = rep["domain"]["punycode"]
         else:
-            self.fqdn = "%s.%s" % (rec["name"], rep["domain"]["punycode"])
+            self.fqdn = "{}.{}".format(rec["name"], rep["domain"]["punycode"])
         self.value = rec["value"]
         self.name = rec["name"]
         self.line_id = rec["line_id"]
 
     def __str__(self):
-        return "%s(%d:%d)" % (self.fqdn, self.domain_id, self.record_id)
+        return "{}({:d}:{:d})".format(self.fqdn, self.domain_id, self.record_id)
 
     def ddns(self, ip):
         self.dnspod.Record.Ddns(domain_id=self.domain_id,
@@ -48,7 +45,7 @@ class Record:
                                 record_line_id=self.line_id,
                                 value=ip)
         self.value = ip
-        print("%s: updated to %s" % (self.fqdn, ip))
+        print("{}: updated to {}".format(self.fqdn, ip))
 
 
 def parse_fqdn(dnspod, all_domains, fqdn):
@@ -69,7 +66,7 @@ def parse_fqdn(dnspod, all_domains, fqdn):
             return Record(dnspod, d["id"], sub_domain)
         except LookupError:
             continue
-    raise LookupError("Fail to lookup the domain name %s" % fqdn)
+    raise LookupError("Fail to lookup the domain name {}".format(fqdn))
 
 def getip_taobao():
     try:
@@ -79,7 +76,7 @@ def getip_taobao():
         print("taobao: json decode error: ", r.text)
         print(ex, file=sys.stderr)
     except requests.RequestException as ex:
-        print("Error on ip.taobao.com: %s", file=sys.stderr)
+        print("Error on ip.taobao.com:", file=sys.stderr)
         print(ex, file=sys.stderr)
     return None
 
@@ -144,7 +141,7 @@ def main():
     while True:
         ip = getip()
         if old_ip != ip:
-            print("External IP Address: %s" % ip)
+            print("External IP Address: {}".format(ip))
             old_ip = ip
         for r in all_records:
             if r.value != ip:
