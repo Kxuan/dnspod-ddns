@@ -24,7 +24,7 @@ class DnsPodError(RuntimeError):
         self.message = message
 
     def __str__(self):
-        return "{:d}: {}".format(self.code, self.message)
+        return "{}: {}".format(self.code, self.message)
 
 class DnsPod:
     def __init__(self, token):

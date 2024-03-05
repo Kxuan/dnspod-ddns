@@ -103,7 +103,10 @@ def get_ipv6():
     for rt in all_rt:
         oif = rt.get_attr('RTA_OIF')
         if oif is None:
-            continue
+            mp = rt.get_attr('RTA_MULTIPATH')
+            if mp is None:
+                continue
+            oif = mp[0]['oif']
         all_addrs = ipr.get_addr(socket.AF_INET6, index=oif)
         if len(all_addrs) == 0:
             continue
@@ -132,6 +135,7 @@ def main():
     args = parse_args()
     old_ip = get_ipv6()
 
+    print("IPv6 Address Detected: {}".format(ip))
     dnspod = DnsPod(os.environ["DNSPOD_TOKEN"])
     print("Listing domains...")
     all_domains = dnspod.Domain.List()["domains"]
