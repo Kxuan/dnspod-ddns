@@ -135,7 +135,7 @@ def main():
     args = parse_args()
     old_ip = get_ipv6()
 
-    print("IPv6 Address Detected: {}".format(ip))
+    print("IPv6 Address Detected: {}".format(old_ip))
     dnspod = DnsPod(os.environ["DNSPOD_TOKEN"])
     print("Listing domains...")
     all_domains = dnspod.Domain.List()["domains"]
